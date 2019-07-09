@@ -11,9 +11,9 @@ func (employee *Employee)PaddEmployee(db *pg.DB) error {
     return nil 
 }
 
-func PlistEmployee(s *Employee, db *pg.DB) error {
+func PlistEmployee(e *Employee, db *pg.DB) error {
   	var employee Employee
-	if err := db.Model(&employee).Where("Email = ? ", s.Email).Select() ; err != nil {
+	if err := db.Model(&employee).Where("Email = ? ", e.Email).Select() ; err != nil {
 		return err 
 	}
 	log.Printf("the employee of particular email id is", employee)
@@ -27,9 +27,10 @@ func PdeleteEmployee(id string, db *pg.DB) error {
 	return nil
 }
 
-func PupdateEmployee(id string , db *pg.DB) error{
+func PupdateEmployee(e *Employee,db *pg.DB) error{
 	/*var employee Employee*/
-	if _,updateErr := db.Model(&Employee{}).Set("Name=?","Nidhi").Where("id = ?",id).Update(); updateErr !=nil {
+
+	if _,updateErr := db.Model(&Employee{}).Set("Name=?",e.Name).Where("id = ?",e.Id).Update(); updateErr !=nil {
 		return updateErr
 	}	
 	return nil

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	db "Assignment/db"
 	aqua "github.com/rightjoin/fuel"
+	pg "github.com/go-pg/pg"
 	migrator "Assignment/migrator"
 )
 type EmployeeService struct {
@@ -13,7 +14,7 @@ type EmployeeService struct {
 		
 		addEmployee         aqua.POST 	 `route:"/"`
 		deleteEmployee      aqua.DELETE  `route:"/{id}"`
-		updateEmployee      aqua.PUT     `route:"/{id}"`
+		updateEmployee      aqua.PUT     `route:"/update/"`
 		listEmployee        aqua.POST  	 `route:"/search/"`
 }
 
@@ -26,9 +27,12 @@ func (s *EmployeeService) AddEmployee(e aqua.Aide) string {
 	var (
 		err error
 		b []byte
+		pg_db *pg.DB
 	)
 
-	var pg_db = db.Connection() 
+	if  pg_db = db.Connection(); pg_db == nil {
+		return "DB Connection failed" 
+	} 
 	
 	if b, err = json.Marshal(e.Post()); err!=nil {
 		fmt.Println("error:", err)
@@ -55,13 +59,16 @@ func (s *EmployeeService) ListEmployee(e aqua.Aide) string {
 	var (
 			err error
 			b []byte
+			pg_db *pg.DB
 		)
 
-	var pg_db = db.Connection()
+	if  pg_db = db.Connection(); pg_db == nil {
+		return "DB Connection failed" 
+	} 
 	 if b, err = json.Marshal(e.Post()); err != nil {
 	 	fmt.Println("error:", err)
 	 } 
-	
+	 
 	employee := &Employee{}
 	if err = json.Unmarshal(b, employee) ; err != nil {
 		log.Printf("Error while unmarshalling , Error : %v", err)
@@ -77,7 +84,11 @@ func (s *EmployeeService) ListEmployee(e aqua.Aide) string {
 	return "not vallidate"
 }
 func (s *EmployeeService) DeleteEmployee(id string, e aqua.Aide) string {
-	var pg_db = db.Connection()
+	var pg_db *pg.DB
+	
+	if  pg_db = db.Connection(); pg_db == nil {
+		return "DB Connection failed" 
+	} 
 
 	if VdeleteEmployee(id,pg_db) == true {
 		if err := PdeleteEmployee(id,pg_db) ; err != nil {
@@ -88,10 +99,27 @@ func (s *EmployeeService) DeleteEmployee(id string, e aqua.Aide) string {
 	return "not validate"
 
 }
-func (s *EmployeeService) UpdateEmployee(id string, e aqua.Aide) string {
-	var pg_db = db.Connection() 
-	if VupdateEmployee(id,pg_db) {
-		if err := PupdateEmployee(id, pg_db) ; err != nil {
+func (s *EmployeeService) UpdateEmployee( e aqua.Aide) string {
+	var (
+			err error
+			b []byte
+			pg_db *pg.DB
+		)
+	if  pg_db = db.Connection(); pg_db == nil {
+		return "DB Connection failed" 
+	} 
+
+	 if b, err = json.Marshal(e.Post()); err != nil {
+	 	fmt.Println("error:", err)
+	 } 
+	
+	employee := &Employee{}
+	if err = json.Unmarshal(b, employee) ; err != nil {
+		log.Printf("Error while unmarshalling , Error : %v", err)
+		return "Failure"
+	} 
+	if VupdateEmployee(pg_db) {
+		if err := PupdateEmployee(employee, pg_db) ; err != nil {
 			log.Printf("error while updating employee",err)
 		}
 		return "sucessfully updated"

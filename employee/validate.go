@@ -23,7 +23,7 @@ func VdeleteEmployee(id string, db *pg.DB) bool {
 	return true 
 }
 
-func VupdateEmployee(id string , db *pg.DB) bool{
+func VupdateEmployee( db *pg.DB) bool{
 	return true
 }
  
