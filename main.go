@@ -1,7 +1,7 @@
 package main 
 
 import(
-	employee "Assignment/employee"s
+	employee "Assignment/employee"
 	aqua "github.com/rightjoin/fuel"
 )
 

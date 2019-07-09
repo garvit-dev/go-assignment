@@ -2,36 +2,16 @@ package employee
 	
 import (
 	pg "github.com/go-pg/pg"
-	orm "github.com/go-pg/pg/orm"
 	"log"
 	)
-type Employee struct{
-	Id string  
-	Name string
-	Email  string
-	Phone_number string
-	Password string
-}
-
-func CreateEmployee(db *pg.DB) error {
-	opts := &orm.CreateTableOptions{
-		IfNotExists: true,
-	}
-	if createErr := db.CreateTable(&Employee{}, opts) ; createErr != nil {
-		return createErr
-	}
-	log.Printf("employee table created\n")
-	return nil
-}
-
-func (employee *Employee)AddEmployee(db *pg.DB) error {
+func (employee *Employee)PaddEmployee(db *pg.DB) error {
     if err:= db.Insert(employee) ; err != nil {
     	return err
     }
     return nil 
 }
 
-func ListEmployee(s *Employee, db *pg.DB) error {
+func PlistEmployee(s *Employee, db *pg.DB) error {
   	var employee Employee
 	if err := db.Model(&employee).Where("Email = ? ", s.Email).Select() ; err != nil {
 		return err 
@@ -40,14 +20,14 @@ func ListEmployee(s *Employee, db *pg.DB) error {
 	return nil
 }
 
-func DeleteEmployee(id string, db *pg.DB) error {
+func PdeleteEmployee(id string, db *pg.DB) error {
 	if _,err := db.Model(&Employee{}).Where("Id IN (?)", id).Delete() ; err != nil{
 		return err
 	}
 	return nil
 }
 
-func UpdateEmployee(id string , db *pg.DB) error{
+func PupdateEmployee(id string , db *pg.DB) error{
 	/*var employee Employee*/
 	if _,updateErr := db.Model(&Employee{}).Set("Name=?","Nidhi").Where("id = ?",id).Update(); updateErr !=nil {
 		return updateErr
