@@ -5,6 +5,14 @@ import (
 	orm "github.com/go-pg/pg/orm"
 	"log"
 	)
+type Employee struct{
+	Id string  
+	Name string
+	Email  string
+	Phone_number string
+	Password string
+}
+
 func CreateEmployee(db *pg.DB) error {
 	opts := &orm.CreateTableOptions{
 		IfNotExists: true,

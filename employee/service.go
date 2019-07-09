@@ -4,6 +4,7 @@ import (
 	"log"
 	"encoding/json"
 	"fmt"
+	db "Assignment/db"
 	aqua "github.com/rightjoin/fuel"
 )
 type EmployeeService struct {
@@ -16,13 +17,14 @@ type EmployeeService struct {
 }
 
 func init(){
-	
-	var pg_db = Connection()
+	// migrator.Createtable()
+	var pg_db = db.Connection()
 	
 	if err := CreateEmployee(pg_db) ; err != nil {
 		log.Printf("Error while creating table employee, Error : %v\n", err)
 	}
 }
+
 
 func (s *EmployeeService) AddEmployee(e aqua.Aide) string {
 		
@@ -31,7 +33,7 @@ func (s *EmployeeService) AddEmployee(e aqua.Aide) string {
 			b []byte
 		)
 
-		var pg_db = Connection() 
+		var pg_db = db.Connection() 
 		
 		if b, err = json.Marshal(e.Post()); err!=nil {
 			fmt.Println("error:", err)
@@ -56,7 +58,7 @@ func (s *EmployeeService) ListEmployee(e aqua.Aide) string {
 			b []byte
 		)
 
-	var pg_db = Connection()
+	var pg_db = db.Connection()
 	 if b, err = json.Marshal(e.Post()); err != nil {
 	 	fmt.Println("error:", err)
 	 } 
@@ -75,7 +77,7 @@ func (s *EmployeeService) ListEmployee(e aqua.Aide) string {
 }
 func (s *EmployeeService) DeleteEmployee(id string, e aqua.Aide) string {
 	
-	var pg_db = Connection()
+	var pg_db = db.Connection()
 	
 	if err := DeleteEmployee(id,pg_db) ; err != nil {
 		log.Printf("error while deleting an employee",err)
@@ -85,7 +87,7 @@ func (s *EmployeeService) DeleteEmployee(id string, e aqua.Aide) string {
 }
 func (s *EmployeeService) UpdateEmployee(id string, e aqua.Aide) string {
 	
-	var pg_db = Connection() 
+	var pg_db = db.Connection() 
 	
 	if err := UpdateEmployee(id, pg_db) ; err != nil {
 		log.Printf("error while updating employee",err)

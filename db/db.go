@@ -1,15 +1,8 @@
-package employee
+package db
 
 import(
 pg "github.com/go-pg/pg"
 )
-type Employee struct{
-	Id string  
-	Name string
-	Email  string
-	Phone_number string
-	Password string
-}
 
 func Connection() *pg.DB{
 		opts:= &pg.Options{
@@ -20,5 +13,3 @@ func Connection() *pg.DB{
 	pg_db := pg.Connect(opts)
 	return pg_db 
 }
-
-
