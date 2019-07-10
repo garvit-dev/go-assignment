@@ -1,13 +1,14 @@
-package main 
+package main
 
-import(
+import (
 	employee "Assignment/employee"
+
 	aqua "github.com/rightjoin/fuel"
 )
 
-func main(){
+func main() {
 
 	server := aqua.NewServer()
-    server.AddService(&employee.EmployeeService{})
-    server.Run()
+	server.AddService(&employee.EmployeeService{})
+	server.Run()
 }
