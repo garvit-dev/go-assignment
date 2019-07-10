@@ -13,13 +13,22 @@ func (employee *Employee) paddEmployee(db *pg.DB) error {
 	return nil
 }
 
-func plistEmployee(e *Employee, db *pg.DB) error {
-	var employee Employee
+func plistEmployee(e *Employee, db *pg.DB) (error, *ListofEmployee) {
+	var (
+		employee Employee
+	)
+	list := &ListofEmployee{}
 	if err := db.Model(&employee).Where("Email = ? ", e.Email).Select(); err != nil {
-		return err
+		return err, list
 	}
+	list.Name = employee.Name
+	list.Id = employee.Id
+	list.Email = employee.Email
+	list.Password = employee.Password
+	list.Phone = employee.Phone
+
 	log.Printf("the employee of particular email id is", employee)
-	return nil
+	return nil, list
 }
 
 func pdeleteEmployee(id string, db *pg.DB) error {
@@ -29,11 +38,19 @@ func pdeleteEmployee(id string, db *pg.DB) error {
 	return nil
 }
 
-func pupdateEmployee(e *Employee, db *pg.DB) error {
+func pupdateEmployee(e *Employee, db *pg.DB) (error, *ListofEmployee) {
 	/*var employee Employee*/
-
-	if _, updateErr := db.Model(&Employee{}).Set("Name=?", e.Name).Where("id = ?", e.Id).Update(); updateErr != nil {
-		return updateErr
+	list := &ListofEmployee{}
+	employee := &Employee{}
+	if _, updateErr := db.Model(employee).Set("Name=?", e.Name).Where("id = ?", e.Id).Update(); updateErr != nil {
+		return updateErr, list
 	}
-	return nil
+
+	list.Name = employee.Name
+	list.Id = employee.Id
+	list.Email = employee.Email
+	list.Password = employee.Password
+	list.Phone = employee.Phone
+
+	return nil, list
 }

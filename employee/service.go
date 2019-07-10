@@ -45,42 +45,52 @@ func (s *EmployeeService) AddEmployee(e aqua.Aide) string {
 
 }
 
-func (s *EmployeeService) ListEmployee(e aqua.Aide) string {
+func (s *EmployeeService) ListEmployee(e aqua.Aide) *ListofEmployee {
 	var (
 		db       *pg.DB
 		employee *Employee
+		list     *ListofEmployee
 		val      bool
+		err      error
 	)
+	// listResponse := ListofEmployee{}
+
 	if db = DB.Connection(); db == nil {
-		return "DB Connection failed"
+		log.Printf("DB Connection failed")
+		// listResponse.Response = "False"
+		return list
 	}
 	if val, employee = vlistEmployee(e); val == true {
-		if err := plistEmployee(employee, db); err != nil {
+		if err, list = plistEmployee(employee, db); err != nil {
 			log.Printf("error while searching an employee", err)
 		}
 
-		return "sucessfully search"
+		return list
 	}
-	return "not vallidate"
+	return list
 }
 
-func (s *EmployeeService) UpdateEmployee(e aqua.Aide) string {
+func (s *EmployeeService) UpdateEmployee(e aqua.Aide) *ListofEmployee {
 	var (
 		db       *pg.DB
 		employee *Employee
 		val      bool
+		list     *ListofEmployee
+		err      error
 	)
 	if db = DB.Connection(); db == nil {
-		return "DB Connection failed"
+		log.Printf("DB Connection failed")
+		// listResponse.Response = "False"
+		return list
 	}
 
 	if val, employee = vupdateEmployee(e); val == true {
-		if err := pupdateEmployee(employee, db); err != nil {
+		if err, list = pupdateEmployee(employee, db); err != nil {
 			log.Printf("error while updating employee", err)
 		}
-		return "sucessfully updated"
+		return list
 	}
-	return "not validate"
+	return list
 }
 func (s *EmployeeService) DeleteEmployee(id string, e aqua.Aide) string {
 	var db *pg.DB
