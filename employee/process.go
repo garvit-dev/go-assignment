@@ -2,6 +2,7 @@ package employee
 
 import (
 	"log"
+	"net/http"
 
 	pg "github.com/go-pg/pg"
 )
@@ -53,4 +54,20 @@ func pupdateEmployee(e *Employee, db *pg.DB) (error, *ListofEmployee) {
 	list.Phone = employee.Phone
 
 	return nil, list
+}
+
+func buildResponse(err error, employee []Employee) Resp {
+	resp := Resp{}
+
+	if err == nil {
+		resp.Status = http.StatusOk
+	} else {
+		resp.Status = http.StatusBadRequest
+	}
+	resp.Error = err
+	resp.Msg = ""
+	resp.Data = employee
+
+	return resp
+
 }
